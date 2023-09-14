@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  <h2>{{ body_title }}</h2>
+  <!-- https://getbootstrap.com/docs/4.6/components/card/#horizontal -->
+  {% for listing in object_list %}
+    <div class="card mb-3" style="max-width: 60rem;">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img src="{{ listing.image_url|default:'' }}" alt="{{ listing.title }}" width="250", height="250">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{{ listing.get_absolute_url }}">
+                {{ listing.title }}
+              </a>
+            </h5>
+            <p class="price card-text font-weight-bold">Price: {{ listing.price }}</p>
+            <p class="description card-text font-weight-bold">{{ listing.description }}</p>
+            <p class="card-text text-muted">Created {{ listing.created }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+  <div>
+    {{ empty_message }}
+  </div>
+  {% endfor %}
+{% endblock %}

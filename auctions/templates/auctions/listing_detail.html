@@ -1,0 +1,64 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>Listing: <span class="title">{{ object.title }}</span></h2>
+{% if object.winner == user%}
+<p class="winner text-success">You won this item!</p>
+{% endif %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="card">
+    <div class="card-header">
+      <button class="watchlist-button badge {% if is_watched_by_user %}badge-info{% endif %}" name="action"
+        type="submit" value="add-remove-from-watchlist">Watchlist</button>
+    </div>
+    <img src="{{ object.image_url|default:'' }}" alt="{{ object.title }}" height="250" width="250">
+    <div class="card-body">
+      <p class="description">{{ object.description }}</p>
+      <p class="price font-weight-bold">{{ object.price }}</p>
+      <div class="fieldWrapper form-group">
+        {{ form.amount.errors }}
+        <label for="id_amount">
+          {% with bids=object.bids.count %}
+          <span class="bid-count">{{ bids }}</span> bids(s) so far.
+          Your bid <span class="is-current-bid">{% if user_is_highest_bidder %}is{% else %}is not{% endif %}</span> the
+          current bid.
+          {% endwith %}
+        </label>
+        {{ form.amount }}
+        <button class="btn btn-primary bid-button" type="submit" name="action" value="place-a-bid" {% if object.closed %}disabled{% endif %}>
+          {% if object.closed %}Closed{% else %}Place Bid{% endif %}
+        </button>
+        {% if user == object.listed_by and not object.closed %}
+        <button class="btn btn-danger close-button" type="submit" name="action" value="close-listing">
+          Close Listing
+        </button>
+        {% endif %}
+      </div>
+      <h3>Details</h3>
+      <ul>
+        <li>
+          Category:
+          <span class="category">{{ object.category }}</span>
+        </li>
+        <li>Listed by: <span class="listed-by">{{ object.listed_by }}</span></li>
+      </ul>
+      {{ form.comment }}
+      <button class="btn btn-success comment-button" type="submit" name="action" value="add-comment">Add Comment</button>
+    </div>
+  </div>
+</form>
+<div class="card">
+  <ul class="list-group list-group-flush comments">
+    <h3 class="card-header">
+      Comments on this listing:
+    </h3>
+    {% for comment in object.comments.all %}
+    <li class="list-group-item">{{ comment.text }}</li>
+    {% empty %}
+    <li class="list-group-item">No comments so far</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

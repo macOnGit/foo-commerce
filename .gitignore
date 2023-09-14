@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.log
+*.sqlite3
+.vscode
+*.code-workspace
+screendumps/
