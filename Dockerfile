@@ -20,10 +20,10 @@ WORKDIR /app
 COPY --from=builder /app/wheels /wheels
 COPY --from=builder /app/requirements.txt .
 
+RUN apt-get update && apt-get install -y netcat
 RUN pip install --no-cache /wheels/*
 
 # TODO: Cache Python Packages to the Docker Host
-# TODO: ENTRYPOINT 
 # TODO: only COPY what is needed
 # TODO: HEALTHCHECK CMD curl --fail http://localhost:8000 || exit 1
 # TODO: add a health check to a Docker Compose file
@@ -32,9 +32,15 @@ RUN pip install --no-cache /wheels/*
 # TODO: update dockerfile.json snippet
 # TODO: use docker scan before deployment
 
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g' ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
 COPY . .
 
 RUN addgroup --gid 1001 --system app && \
     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
 
 USER app
+
+ENTRYPOINT ["./entrypoint.sh"]
