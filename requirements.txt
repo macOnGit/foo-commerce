@@ -7,3 +7,4 @@ py-moneyed==3.0
 sqlparse==0.4.4
 typing_extensions==4.7.1
 psycopg2-binary==2.9.6
+gunicorn==21.2.0

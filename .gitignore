@@ -4,5 +4,5 @@ __pycache__/
 *.sqlite3
 .vscode
 *.code-workspace
-.env.dev
+.env.*
 screendumps/
