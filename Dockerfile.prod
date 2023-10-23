@@ -50,11 +50,12 @@ RUN chown -R app:app .
 USER app
 RUN mkdir /app/staticfiles
 
+HEALTHCHECK CMD curl --fail http://localhost:8000 || exit 1
+
 ENTRYPOINT ["./entrypoint.prod.sh"]
 
 # TODO: Cache Python Packages to the Docker Host
 # TODO: only COPY what is needed
-# TODO: HEALTHCHECK CMD curl --fail http://localhost:8000 || exit 1
 # TODO: add envars via --mount=type=secret
 # TODO: combine Dockerfiles into one and use flag or envar to switch
 # TODO: update dockerfile.json snippet
